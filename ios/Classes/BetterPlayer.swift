@@ -392,6 +392,19 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
     }
 
     public func duration() -> Int64 {
+        guard let item = player.currentItem else {
+            return 0
+        }
+
+        if item.duration.isIndefinite {
+            if let seekable = item.seekableTimeRanges.last?.timeRangeValue {
+                let dvrDurationSeconds = CMTimeGetSeconds(seekable.duration)
+                if dvrDurationSeconds.isFinite && dvrDurationSeconds > 0 {
+                    return Int64(dvrDurationSeconds * 1000)
+                }
+            }
+        }
+        
         let time: CMTime
         if #available(iOS 13, *) {
             time = player.currentItem?.duration ?? .zero
