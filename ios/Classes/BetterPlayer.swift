@@ -401,8 +401,8 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
             if let last = ranges.last?.timeRangeValue {
         
                 let end = CMTimeGetSeconds(last.end)
-                if duration.isFinite && duration > 0 {
-                    return end
+                if end.isFinite && end > 0 {
+                    return Int64(end * 1000)
                 }
             }
         }
