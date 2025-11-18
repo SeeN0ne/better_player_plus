@@ -397,10 +397,16 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
         }
 
         if item.duration.isIndefinite {
-            if let seekable = item.seekableTimeRanges.last?.timeRangeValue {
-                let dvrDurationSeconds = CMTimeGetSeconds(seekable.duration)
-                if dvrDurationSeconds.isFinite && dvrDurationSeconds > 0 {
-                    return Int64(dvrDurationSeconds * 1000)
+            let ranges = item.seekableTimeRanges
+            if let first = ranges.first?.timeRangeValue,
+               let last = ranges.last?.timeRangeValue {
+        
+                let start = CMTimeGetSeconds(first.start)
+                let end = CMTimeGetSeconds(last.end)
+        
+                let duration = end - start
+                if duration.isFinite && duration > 0 {
+                    return Int64(duration * 1000)
                 }
             }
         }
